@@ -19,6 +19,14 @@ func (this *Node) Set(key string, v interface{}) error {
 
 }
 
+func (this *Node) IsArray() bool {
+    
+}
+
+func (this *Node) IsMap() bool {
+
+}
+
 func (this *Node) ToJSON() []byte {
 
 }
