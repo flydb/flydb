@@ -80,3 +80,13 @@ type MapNode struct {
 type ValueNode struct {
     data interface{}
 }
+
+type AnyNode {
+    node *Node
+}
+
+func (this *AnyNode) Marshal() []byte {
+    return this.node.Marshal()
+}
+
+func (this *AnyNode) Unmarshal() 
