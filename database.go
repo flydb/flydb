@@ -2,7 +2,7 @@ package jsondb
 
 type Database struct {
     path string
-    root *Node
+    root *SmartNode
 }
 
 func Open(path) *Database {
@@ -49,16 +49,16 @@ func (this *Database) LoadFile(path) error {
 }
 
 // Check key existence
-func (this *Database) Has(key string) bool {
+func (this *Database) Has(path string) bool {
 
 } 
 
 // Get node by key
-func (this *Database) Get(key string) *Node {
-
+func (this *Database) Get(path string) (*SmartNode, bool) {
+    return this.root.Get(path)
 }
 
 // Set node value
-func (this *Database) Set(key string, v interface{}) {
-
+func (this *Database) Set(path string, v interface{}) {
+    return this.root.Set(path, v)
 }
