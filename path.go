@@ -4,11 +4,18 @@ import (
     "strings"
 )
 
-func parsePath(path string) []string {
-    path = strings.Trim(path, ".")
-    if path == "" {
-        return nil
-    }
+func parsePath(path interface{}) []string {
+    switch typedPath := path.(type) {
+    case []string:
+        return typedPath
+    case string:
+        typedPath = strings.Trim(typedPath, ".")
+        if typedPath == "" {
+            return nil
+        }
 
-    return strings.Split(path, ".")
+        return strings.Split(typedPath, ".")
+    default:
+        panic("invalid path")
+    }
 }

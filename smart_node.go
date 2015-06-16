@@ -17,7 +17,7 @@ func (this *SmartNode) Unmarshal(b []byte) error {
     return this.node.Unmarshal(b)
 }
 
-func (this *SmartNode) Get(path) (*SmartNode, error) {
+func (this *SmartNode) Get(path interface{}) (*SmartNode, error) {
     steps := parsePath(path)
     if !steps {
         return this, nil
@@ -56,25 +56,73 @@ func (this *SmartNode) Get(path) (*SmartNode, error) {
     }
 }
 
-func (this *SmartNode) Set(path, node interface{}) (error) {
+func (this *SmartNode) Set(path interface{}, v interface{}) (error) {
     steps := parsePath(path)
+    var node Node;
+    switch typedValue := v.(type) {
+        case Node {
 
+        }
+    }
+    if !steps {
+    }
 }
 
-func (this *SmartNode) Delete(path) error {
+func (this *SmartNode) Delete(path interface{}) error {
+    steps := parsePath(path)
+    if !steps {
+        return fmt.Errorf("cannot delete root")
+    }
 
+    if len(steps) == 1 {
+        switch node := this.node.(type) {
+        case *MapNode:
+            node.Delete(steps[0])
+            return nil
+        case *ArrayNode:
+            var key, ok := strconv.Atoi(steps[0])
+            if !ok {
+                return fmt.Errorf("key of array is not int")
+            }
+            return node.Delete(key)
+        default:
+            return fmt.Errorf("value node does not have children")
+        }
+    }
+
+    parent, err := this.Get(steps[0:len(steps) - 1])
+    if err != nil {
+        return err
+    }
+
+    return parent.Delete(steps[1:])
 }
 
 func (this *SmartNode) Array() (*ArrayNode, error) {
+    node, ok := this.node.(*ArrayNode)
+    if !ok {
+        return nil, fmt.Errorf("not an array node")
+    }
 
+    return node, nil
 }
 
 func (this *SmartNode) Map() (*MapNode, error) {
+    node, ok := this.node.(*MapNode)
+    if !ok {
+        return nil, fmt.Errorf("not a map node")
+    }
 
+    return node, nil
 }
 
 func (this *SmartNode) Value() (*ValueNode, error) {
+    node, ok := this.node.(*ValueNode)
+    if !ok {
+        return nil, fmt.Errorf("not a value node")
+    }
 
+    return node, nil
 }
 
 func (this *SmartNode) IsArray() bool {
