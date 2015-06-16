@@ -1,7 +1,7 @@
 package jsondb
 
 type ValueNode struct {
-
+    data interface{}
 }
 
 func (this *ValueNode) Marshal() ([]byte, error) {
@@ -10,6 +10,11 @@ func (this *ValueNode) Marshal() ([]byte, error) {
 
 func (this *ValueNode) Unmarshal([]byte) error {
 
+}
+
+func (this *ValueNode) SetValue(value interface{}) error {
+    this.data = value
+    return nil
 }
 
 func (this *ValueNode) String() (string, error) {

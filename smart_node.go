@@ -5,18 +5,22 @@ import (
     "strconv"
 )
 
+// Wrapper for all types of node
 type SmartNode struct {
     node *Node
 }
 
+// Convert node to json bytes
 func (this *SmartNode) Marshal() ([]byte, error) {
     return this.node.Marshal()
 }
 
+// Convert json bytes to node
 func (this *SmartNode) Unmarshal(b []byte) error {
     return this.node.Unmarshal(b)
 }
 
+// Get node with path
 func (this *SmartNode) Get(path interface{}) (*SmartNode, error) {
     steps := parsePath(path)
     if !steps {
@@ -31,7 +35,7 @@ func (this *SmartNode) Get(path interface{}) (*SmartNode, error) {
             }
 
             nextNode = &SmartNode {
-                next
+                next,
             }
 
             return nextNode.Get(steps[1:])
@@ -47,7 +51,7 @@ func (this *SmartNode) Get(path interface{}) (*SmartNode, error) {
             }
 
             nextNode = &SmartNode {
-                next
+                next,
             }
 
             return nextNode.Get(steps[1:])
@@ -56,18 +60,57 @@ func (this *SmartNode) Get(path interface{}) (*SmartNode, error) {
     }
 }
 
+// Set node value by path
 func (this *SmartNode) Set(path interface{}, v interface{}) (error) {
     steps := parsePath(path)
-    var node Node;
-    switch typedValue := v.(type) {
-        case Node {
 
-        }
-    }
+    // Set value for current node
     if !steps {
+        if node, ok := v.(*Node); ok {
+            this.node = node
+            return nil
+        }
+
+        if node, ok := this.node.(*ValueNode); ok {
+            return node.SetValue(v)
+        }
+
+        return fmt.Errorf("set by path failed")
+    }
+
+    firstStep := steps[0]
+    switch node := this.node.(type) {
+    case *MapNode:
+        if !node.Has(firstStep) {
+            node.Set(firstStep, NewMapNode())
+        }
+        child, err := node.Get(firstStep)
+        if err != nil {
+            return err
+        }
+        return &SmartNode{
+            child,
+        }.Set(steps[1:], v)
+    case *ArrayNode:
+        key, ok := strconv.Atoi(firstStep)
+        if !ok {
+            return fmt.Errorf("invalid key for array node")
+        }
+
+        child, err := node.Get(key)
+        if err != nil {
+            return err
+        }
+
+        return &SmartNode{
+            child,
+        }.Set(steps[1:], v)
+    default:
+        return fmt.Errorf("value node does not have children")
     }
 }
 
+// Delete node by path
 func (this *SmartNode) Delete(path interface{}) error {
     steps := parsePath(path)
     if !steps {
@@ -80,7 +123,7 @@ func (this *SmartNode) Delete(path interface{}) error {
             node.Delete(steps[0])
             return nil
         case *ArrayNode:
-            var key, ok := strconv.Atoi(steps[0])
+            key, ok := strconv.Atoi(steps[0])
             if !ok {
                 return fmt.Errorf("key of array is not int")
             }
@@ -98,6 +141,17 @@ func (this *SmartNode) Delete(path interface{}) error {
     return parent.Delete(steps[1:])
 }
 
+// Check path existance
+func (this *SmartNode) Has(path interface{}) bool {
+    _, err := this.Get(path)
+    if err != nil {
+        return false
+    }
+
+    return true
+}
+
+// Convert to array node
 func (this *SmartNode) Array() (*ArrayNode, error) {
     node, ok := this.node.(*ArrayNode)
     if !ok {
@@ -107,6 +161,7 @@ func (this *SmartNode) Array() (*ArrayNode, error) {
     return node, nil
 }
 
+// Convert to map node
 func (this *SmartNode) Map() (*MapNode, error) {
     node, ok := this.node.(*MapNode)
     if !ok {
@@ -116,6 +171,7 @@ func (this *SmartNode) Map() (*MapNode, error) {
     return node, nil
 }
 
+// Convert to value node
 func (this *SmartNode) Value() (*ValueNode, error) {
     node, ok := this.node.(*ValueNode)
     if !ok {
@@ -125,16 +181,19 @@ func (this *SmartNode) Value() (*ValueNode, error) {
     return node, nil
 }
 
+// Check if this is an array node
 func (this *SmartNode) IsArray() bool {
     _, ok := this.node.(*ArrayNode)
     return ok
 }
 
+// Check if this is a map node
 func (this *SmartNode) IsMap() bool {
     _, ok := this.node.(*MapNode)
     return ok
 }
 
+// Check if this is a value node
 func (this *SmartNode) IsValue() bool {
     _, ok := this.node.(*ValueNode)
     return ok
