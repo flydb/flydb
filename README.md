@@ -1,4 +1,4 @@
-# jsondb
+# flydb
 
     In progress...
 
@@ -12,7 +12,7 @@ Pure Go database in JSON format.
 
 ## Limits
 
-- Performance: jsondb is not built for performance, so you may not want to use it with huge data
+- Performance: flydb is not built for performance, so you may not want to use it with huge data
 
 ## Usage
 

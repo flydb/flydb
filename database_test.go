@@ -1,4 +1,4 @@
-package jsondb
+package flydb
 
 import (
     "testing"

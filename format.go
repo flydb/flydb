@@ -1,4 +1,4 @@
-package jsondb
+package flydb
 
 type Format interface {
     Marshal(v interface{}) ([]byte, error)

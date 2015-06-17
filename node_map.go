@@ -1,4 +1,4 @@
-package jsondb
+package flydb
 
 type MapNode struct {
     data map[string]*Node

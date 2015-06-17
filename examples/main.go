@@ -1,9 +1,9 @@
 package main
 
-import "github.com/selphish/jsondb"
+import "github.com/selphish/flydb"
 
 func main() {
-    db, _ := jsondb.Open("db.json")
+    db, _ := flydb.Open("db.json")
 
     // get
     println db.MustGetString("users.0.username")
