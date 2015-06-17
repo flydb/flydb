@@ -4,6 +4,15 @@ import (
     "fmt"
 )
 
+func NewValueNode(v interface{}) (*ValueNode, error) {
+    node := & ValueNode{}
+    if err := node.SetRaw(v); err != nil {
+        return nil, err
+    }
+
+    return node, nil
+}
+
 type ValueNode struct {
     data interface{}
 }
@@ -91,5 +100,5 @@ func (this *ValueNode) MustBool() (bool, error) {
 }
 
 func (this *ValueNode) IsNull() bool {
-    
+
 }

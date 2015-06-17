@@ -9,13 +9,27 @@ type ArrayNode struct {
     data []*Node
 }
 
-// Convert node to JSON bytes
-func (this *ArrayNode) Marshal() ([]byte, error) {
+func (this *ArrayNode) SetRaw(rawArray []interface{}) (error) {
+    data := make([]*Node, len(v))
+    for k, v := range rawArray {
+        node, err := CreateNodeFromRawData(v)
+        if err != nil {
+            return err
+        }
 
+        data[k] = node
+    }
+
+    this.data = data
 }
 
-func (this *ArrayNode) Unmarshal(b []byte) error {
+func (this *ArrayNode) GetRaw() []interface{} {
+    result := make([]interface{}, len(this.data))
+    for i, v := range this.data {
+        result[i] = v.GetRaw()
+    }
 
+    return result
 }
 
 func (this *ArrayNode) Append(node *Node) {
