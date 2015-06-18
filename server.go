@@ -1,6 +1,6 @@
 package flydb
 
-type Server {
+type Server struct {
 
 }
 

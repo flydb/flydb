@@ -1,5 +1,5 @@
 package flydb
 
-import (
-    "gopkg.in/yaml.v2"
-)
+// import (
+//     "gopkg.in/yaml.v2"
+// )

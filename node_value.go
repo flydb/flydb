@@ -22,7 +22,7 @@ func (this *ValueNode) GetRaw() (interface{}) {
 }
 
 func (this *ValueNode) SetRaw(v interface{}) error {
-    switch typedValue = v.(type) {
+    switch v.(type) {
     case string, int, float32, bool, nil:
         this.data = v
         return nil
@@ -41,7 +41,7 @@ func (this *ValueNode) String() (string, error) {
 
 func (this *ValueNode) MustString() (string) {
     v, err := this.String()
-    if err {
+    if err != nil {
         panic(err)
     }
 
@@ -56,9 +56,9 @@ func (this *ValueNode) Int() (int, error) {
     return 0, fmt.Errorf("Node value is not int")
 }
 
-func (this *ValueNode) MustInt() (int, error) {
+func (this *ValueNode) MustInt() int {
     v, err := this.Int()
-    if err {
+    if err != nil {
         panic(err)
     }
 
@@ -75,7 +75,7 @@ func (this *ValueNode) Float() (float32, error) {
 
 func (this *ValueNode) MustFloat() (float32) {
     v, err := this.Float()
-    if err {
+    if err != nil {
         panic(err)
     }
 
@@ -90,9 +90,9 @@ func (this *ValueNode) Bool() (bool, error) {
     return false, fmt.Errorf("Node value is not bool")
 }
 
-func (this *ValueNode) MustBool() (bool, error) {
+func (this *ValueNode) MustBool() (bool) {
     v, err := this.Bool()
-    if err {
+    if err != nil {
         panic(err)
     }
 
@@ -100,5 +100,5 @@ func (this *ValueNode) MustBool() (bool, error) {
 }
 
 func (this *ValueNode) IsNull() bool {
-
+    return this.data == nil
 }
