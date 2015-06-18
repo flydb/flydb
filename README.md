@@ -2,13 +2,12 @@
 
     In progress...
 
-Pure Go database in JSON format.
+Pure Go database with simple format.
 
-## Goals
+## Features
 
-- Single JSON file as storage
-- Data safe
-- Simple API
+- Support different data file format: `JSON`, `YAML`, `XML`
+- Powerful access API
 
 ## Limits
 
@@ -16,4 +15,30 @@ Pure Go database in JSON format.
 
 ## Usage
 
-See `examples/main.go`.
+### Embed in Golang
+
+```go
+package main
+
+import (
+    "github.com/flydb/flydb"
+    "log"
+)
+
+func main() {
+    db, err := flydb.Open("/path/to/db.json")
+    if err != nil {
+        fmt.Errorf("cannot open database")
+    }
+    email := db.MustGet("users.3.email").MustVallue().MustString()
+    log.Println(email)
+}
+```
+
+### Server
+
+TODO
+
+## Data Format
+
+Currently support JSON, YAML and XML, you can convert between all these formats.

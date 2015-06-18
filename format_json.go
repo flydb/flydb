@@ -12,7 +12,8 @@ func (this *JsonFormat) Extensions() []string {
 }
 
 func (this *JsonFormat) Marshal(v interface{}) ([]byte, error) {
-    return json.Marshal(v)
+    // TODO: make indent configurable
+    return json.MarshalIndent(v, "", "    ")
 }
 
 func (this *JsonFormat) Unmarshal(b []byte) (interface{}, error) {

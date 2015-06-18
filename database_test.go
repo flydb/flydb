@@ -12,4 +12,6 @@ func TestOpen(t *testing.T) {
 
     t.Log(db.MustGet("users.0.username").MustValue().String())
     t.Log(db.MustGet("users.1.email").MustValue().String())
+
+    t.Log(db.SaveAs("tests/tmp/saveas.json"))
 }

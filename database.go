@@ -24,16 +24,8 @@ func Open(path string) (*Database, error) {
 }
 
 func OpenFormat(path string, format interface{}) (*Database, error) {
-    var realFormat Format
-    switch typedFormat := format.(type) {
-    case string:
-        realFormat = GetFormat(typedFormat)
-        if realFormat == nil {
-            fmt.Errorf("unknown format: %s", typedFormat)
-        }
-    case Format:
-        realFormat = typedFormat
-    default:
+    var realFormat = GuessFormat(format)
+    if realFormat == nil {
         return nil, fmt.Errorf("unknown format")
     }
 
@@ -82,8 +74,20 @@ func (this *Database) Flush() {
 
 // Save database as another file
 func (this *Database) SaveAs(path string) error {
+    ext := filepath.Ext(path)
+
+    format := CheckFormatByExtension(ext)
+    return this.SaveAsFormat(path, format)
+}
+
+func (this *Database) SaveAsFormat(path string, format interface{}) error {
+    var realFormat = GuessFormat(format)
+    if realFormat == nil {
+        return fmt.Errorf("unknown format")
+    }
+
     raw := this.root.GetRaw()
-    b, err := this.format.Marshal(raw)
+    b, err := realFormat.Marshal(raw)
     if err != nil {
         return err
     }

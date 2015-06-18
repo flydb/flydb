@@ -20,6 +20,20 @@ func GetFormat(name string) Format {
     return formatMap[name]
 }
 
+func GuessFormat(format interface{}) Format {
+    var realFormat Format
+    switch typedFormat := format.(type) {
+    case string:
+        realFormat = GetFormat(typedFormat)
+    case Format:
+        realFormat = typedFormat
+    default:
+        return nil
+    }
+
+    return realFormat
+}
+
 func CheckFormatByExtension(ext string) Format {
     ext = strings.ToLower(strings.TrimLeft(ext, "."))
     for _, format := range formatMap {
