@@ -1,3 +1,6 @@
+// Copyright 2015 Liu Dong <ddliuhb@gmail.com>.
+// Licensed under the MIT license.
+
 package flydb
 
 import (
@@ -9,7 +12,7 @@ import (
 type Database struct {
     path string
     format Format
-    root *SmartNode
+    root *Node
 }
 
 func Open(path string) (*Database, error) {
@@ -39,13 +42,9 @@ func OpenFormat(path string, format interface{}) (*Database, error) {
         return nil, err
     }
 
-    node, err := CreateNodeFromRawData(v)
+    root, err := CreateNode(v)
     if err != nil {
         return nil, err
-    }
-
-    root := &SmartNode {
-        node,
     }
 
     return &Database{
@@ -57,7 +56,7 @@ func OpenFormat(path string, format interface{}) (*Database, error) {
 // Create an in memory database
 func Memory() *Database {
     return &Database {
-        root: &SmartNode {
+        root: &Node {
         },
     }
 }
@@ -95,21 +94,6 @@ func (this *Database) SaveAsFormat(path string, format interface{}) error {
     return ioutil.WriteFile(path, b, 0600)
 }
 
-// Check key existence
-func (this *Database) Has(path interface{}) bool {
-    return this.root.Has(path)
-} 
-
-// Get node by key
-func (this *Database) Get(path interface{}) (*SmartNode, error) {
-    return this.root.Get(path)
-}
-
-func (this *Database) MustGet(path interface{}) (*SmartNode) {
-    return this.root.MustGet(path)
-}
-
-// Set node value
-func (this *Database) Set(path interface{}, v interface{}) error {
-    return this.root.Set(path, v)
+func (this *Database) Root() *Node {
+    return this.root
 }

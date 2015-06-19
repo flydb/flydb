@@ -1,3 +1,6 @@
+// Copyright 2015 Liu Dong <ddliuhb@gmail.com>.
+// Licensed under the MIT license.
+
 package flydb
 
 import (
@@ -5,7 +8,7 @@ import (
 )
 
 type MapNode struct {
-    data map[string]Node
+    data map[string]*Node
 }
 
 func NewMapNode(v map[string]interface{}) (*MapNode, error) {
@@ -25,9 +28,9 @@ func (this *MapNode) SetRaw(raw interface{}) (error) {
         return fmt.Errorf("raw data is not a map")
     }
 
-    data := make(map[string]Node)
+    data := make(map[string]*Node)
     for k, v := range rawMap {
-        node, err := CreateNodeFromRawData(v)
+        node, err := CreateNode(v)
         if err != nil {
             return err
         }
@@ -47,13 +50,19 @@ func (this *MapNode) GetRaw() interface{} {
     return result
 }
 
-func (this *MapNode) Get(k string) (Node, bool) {
+func (this *MapNode) Get(k string) (*Node, bool) {
     node, ok := this.data[k]
     return node, ok
 }
 
-func (this *MapNode) Set(k string, node Node) {
+func (this *MapNode) Set(k string, data interface{}) error {
+    node, err := CreateNode(data)
+    if err != nil {
+        return err
+    }
+
     this.data[k] = node
+    return nil
 }
 
 func (this *MapNode) Has(k string) bool {

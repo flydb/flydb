@@ -1,3 +1,6 @@
+// Copyright 2015 Liu Dong <ddliuhb@gmail.com>.
+// Licensed under the MIT license.
+
 package flydb
 
 import (
@@ -5,15 +8,17 @@ import (
 )
 
 func TestOpen(t *testing.T) {
-    db, err := Open("tests/db.json")
+    _, err := Open("tests/db.json")
     if err != nil {
         t.Error(err)
     }
+}
 
-    t.Log(db.MustGet("users.0.username").MustValue().String())
-    t.Log(db.MustGet("users.1.email").MustValue().String())
-
-    t.Log(db.SaveAs("tests/tmp/saveas.json"))
+func TestSave(t *testing.T) {
+    db := GetTestDB()
+    if err := db.SaveAs("tests/tmp/saveas.json"); err != nil {
+        t.Error(err)
+    }
 }
 
 func GetTestDB() *Database {

@@ -1,3 +1,6 @@
+// Copyright 2015 Liu Dong <ddliuhb@gmail.com>.
+// Licensed under the MIT license.
+
 package flydb
 
 import (
@@ -17,7 +20,7 @@ func NewArrayNode(v []interface{}) (*ArrayNode, error) {
 
 // Array node contains list of nodes
 type ArrayNode struct {
-    data []Node
+    data []*Node
 }
 
 func (this *ArrayNode) SetRaw(raw interface{}) (error) {
@@ -25,9 +28,9 @@ func (this *ArrayNode) SetRaw(raw interface{}) (error) {
     if !ok {
         return fmt.Errorf("raw data is not an array")
     }
-    data := make([]Node, len(rawArray))
+    data := make([]*Node, len(rawArray))
     for k, v := range rawArray {
-        node, err := CreateNodeFromRawData(v)
+        node, err := CreateNode(v)
         if err != nil {
             return err
         }
@@ -48,11 +51,17 @@ func (this *ArrayNode) GetRaw() interface{} {
     return result
 }
 
-func (this *ArrayNode) Append(node Node) {
+func (this *ArrayNode) Append(data interface{}) error {
+    node, err := CreateNode(data)
+    if err != nil {
+        return err
+    }
+
     this.data = append(this.data, node)
+    return nil
 }
 
-func (this *ArrayNode) Get(i int) (Node, error) {
+func (this *ArrayNode) Get(i int) (*Node, error) {
     if i < 0 || i >= len(this.data) {
         return nil, fmt.Errorf("key out of range: %d", i)
     }
@@ -60,9 +69,14 @@ func (this *ArrayNode) Get(i int) (Node, error) {
     return this.data[i], nil
 }
 
-func (this *ArrayNode) Set(i int, node Node) error {
+func (this *ArrayNode) Set(i int, data interface{}) error {
     if i < 0 || i >= len(this.data) {
         return fmt.Errorf("key out of range: %d", i)
+    }
+
+    node, err := CreateNode(data)
+    if err != nil {
+        return err
     }
 
     this.data[i] = node
