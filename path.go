@@ -5,6 +5,9 @@ import (
 )
 
 func parsePath(path interface{}) []string {
+    if path == nil {
+        return nil
+    }
     switch typedPath := path.(type) {
     case []string:
         return typedPath

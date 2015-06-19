@@ -15,3 +15,12 @@ func TestOpen(t *testing.T) {
 
     t.Log(db.SaveAs("tests/tmp/saveas.json"))
 }
+
+func GetTestDB() *Database {
+    db, err := Open("tests/db.json")
+    if err != nil {
+        panic(err)
+    }
+
+    return db
+}
