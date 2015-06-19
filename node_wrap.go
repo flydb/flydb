@@ -21,7 +21,6 @@ func CreateWrapNodeFromRawData(rawData interface{}) (WrapNode, error) {
     case string, float32, int, bool:
         return NewValueNode(rawData)
     default:
-        fmt.Println("####", rawData)
         return nil, fmt.Errorf("Invalid data type")
     }
 }
