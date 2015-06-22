@@ -1,5 +1,9 @@
 # flydb
 
+[![Travis](https://img.shields.io/travis/flydb/flydb.svg?style=flat-square)](https://travis-ci.org/flydb/flydb)
+[![Go doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/flydb/flydb)
+[![GitHub license](https://img.shields.io/github/license/flydb/flydb.svg?style=flat-square)](LICENSE)
+
     In progress...
 
 Pure Go database with simple format.
