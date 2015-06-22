@@ -1,6 +1,6 @@
 package main
 
-import "github.com/selphish/flydb"
+import "github.com/flydb/flydb"
 
 func main() {
     db, _ := flydb.Open("db.json")
