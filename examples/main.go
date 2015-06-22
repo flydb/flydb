@@ -6,14 +6,16 @@ func main() {
     db, _ := flydb.Open("db.json")
 
     // get
-    println db.MustGetString("users.0.username")
+    println(db.Root().MustGet("users.0.username").MustValue().MustString())
 
     // set
-    db.Set("users.0.star", 100)
+    db.Root().Set("users.0.star", 100)
+
+    println(db.Root().MustGet("users.0.star").MustValue().MustInt())
 
     // filter
-    db.MustGet("users").Filter(func(n *db.Node) bool {
-        return true
-    })
+    // db.MustGet("users").Filter(func(n *db.Node) bool {
+    //     return true
+    // })
 
 }
