@@ -10,47 +10,28 @@ import (
 )
 
 type Database struct {
-    path string
-    format Format
+    config Config
     root *Node
 }
 
-func Open(path string) (*Database, error) {
-    ext := filepath.Ext(path)
-
-    format := CheckFormatByExtension(ext)
-    if format == nil {
-        return nil, fmt.Errorf("unknown format")
+func New(config Config) *Database {
+    config = setDefaultConfig(config)
+    return &Database{
+        config: config,
     }
-
-    return OpenFormat(path, format)
 }
 
-func OpenFormat(path string, format interface{}) (*Database, error) {
-    var realFormat = GuessFormat(format)
-    if realFormat == nil {
-        return nil, fmt.Errorf("unknown format")
-    }
-
-    bytes, err := ioutil.ReadFile(path)
-    if err != nil {
+func Open(path string) (*Database, error) {
+    db := New(Config {
+        Path: path,
+        Save: true,
+        SaveInterval: 5,
+    })
+    if err := db.Open(); err != nil {
         return nil, err
     }
 
-    v, err := realFormat.Unmarshal(bytes)
-    if err != nil {
-        return nil, err
-    }
-
-    root, err := CreateNode(v)
-    if err != nil {
-        return nil, err
-    }
-
-    return &Database{
-        path: path,
-        root: root,
-    }, nil
+    return db, nil
 }
 
 // Create an in memory database
@@ -61,14 +42,43 @@ func Memory() *Database {
     }
 }
 
-// Close database
-func (this *Database) Close() {
+func (this *Database) Open() error {
+    if this.config.Format == nil {
+        return fmt.Errorf("unknown format")
+    }
 
+    bytes, err := ioutil.ReadFile(this.config.Path)
+    if err != nil {
+        return err
+    }
+
+    v, err := this.config.Format.Unmarshal(bytes)
+    if err != nil {
+        return err
+    }
+
+    root, err := CreateNode(v)
+    if err != nil {
+        return err
+    }
+
+    this.root = root
+
+    return nil
+}
+
+// Close database
+func (this *Database) Close() error {
+    return this.Save()
 }
 
 // Flush changes to disk
 func (this *Database) Flush() {
 
+}
+
+func (this *Database) Save() error {
+    return this.SaveAs(this.config.Path)
 }
 
 // Save database as another file
