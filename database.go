@@ -7,11 +7,13 @@ import (
     "fmt"
     "io/ioutil"
     "path/filepath"
+    "time"
 )
 
 type Database struct {
     config Config
     root *Node
+    isOpen bool
 }
 
 func New(config Config) *Database {
@@ -63,13 +65,27 @@ func (this *Database) Open() error {
     }
 
     this.root = root
+    this.isOpen = true
+    if this.config.SaveInterval > 0 {
+        this.loopSave()
+    }
 
     return nil
 }
 
 // Close database
 func (this *Database) Close() error {
+    this.isOpen = false
     return this.Save()
+}
+
+func (this *Database) loopSave() {
+    time.AfterFunc(time.Duration(this.config.SaveInterval) * time.Millisecond, func() {
+        if this.isOpen {
+            this.Save()
+            this.loopSave();
+        }
+    })
 }
 
 // Flush changes to disk
