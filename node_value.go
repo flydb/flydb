@@ -26,7 +26,7 @@ func (this *ValueNode) GetRaw() (interface{}) {
 
 func (this *ValueNode) SetRaw(v interface{}) error {
     switch v.(type) {
-    case string, int, float32, bool, nil:
+    case string, int, int32, int64, float32, float64, bool, nil:
         this.data = v
         return nil
     }
@@ -68,16 +68,63 @@ func (this *ValueNode) MustInt() int {
     return v
 }
 
-func (this *ValueNode) Float() (float32, error) {
+func (this *ValueNode) Int32() (int32, error) {
+    if v, ok := this.data.(int32); ok {
+        return v, nil
+    }
+
+    return 0, fmt.Errorf("Node value is not int32")
+}
+
+func (this *ValueNode) MustInt32() int32 {
+    v, err := this.Int32()
+    if err != nil {
+        panic(err)
+    }
+
+    return v
+}
+
+func (this *ValueNode) Int64() (int64, error) {
+    return convertToInt64(this.data)
+}
+
+func (this *ValueNode) MustInt64() int64 {
+    v, err := this.Int64()
+    if err != nil {
+        panic(err)
+    }
+
+    return v
+}
+
+func (this *ValueNode) Float32() (float32, error) {
     if v, ok := this.data.(float32); ok {
         return v, nil
     }
 
-    return 0, fmt.Errorf("Node value is not float")
+    return 0, fmt.Errorf("Node value is not float32")
 }
 
-func (this *ValueNode) MustFloat() (float32) {
-    v, err := this.Float()
+func (this *ValueNode) MustFloat32() (float32) {
+    v, err := this.Float32()
+    if err != nil {
+        panic(err)
+    }
+
+    return v
+}
+
+func (this *ValueNode) Float64() (float64, error) {
+    if v, ok := this.data.(float64); ok {
+        return v, nil
+    }
+
+    return 0, fmt.Errorf("Node value is not float64")
+}
+
+func (this *ValueNode) MustFloat64() (float64) {
+    v, err := this.Float64()
     if err != nil {
         panic(err)
     }

@@ -18,10 +18,10 @@ func CreateWrapNodeFromRawData(rawData interface{}) (WrapNode, error) {
         return NewMapNode(typedRawData)
     case []interface{}:
         return NewArrayNode(typedRawData)
-    case string, float32, int, bool:
+    case string, float32, float64, int, int64, bool:
         return NewValueNode(rawData)
     default:
-        return nil, fmt.Errorf("Invalid data type")
+        return nil, fmt.Errorf("Invalid data type: %v", rawData)
     }
 }
 

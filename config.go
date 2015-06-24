@@ -12,7 +12,7 @@ type Config struct {
     FormatName string
     Format Format
     Save bool
-    // save database every `SaveInterval` seconds
+    // save database every `SaveInterval` milliseconds
     SaveInterval int
 }
 

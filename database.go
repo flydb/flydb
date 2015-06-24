@@ -25,7 +25,7 @@ func Open(path string) (*Database, error) {
     db := New(Config {
         Path: path,
         Save: true,
-        SaveInterval: 5,
+        SaveInterval: 5000,
     })
     if err := db.Open(); err != nil {
         return nil, err
