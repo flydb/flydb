@@ -3,10 +3,28 @@
 
 package flydb
 
-type Server struct {
+import (
+    "net/http"
+)
+
+func Serve(path, listen string) {
 
 }
 
-func (this *Server) Serve() {
+type Server struct {
+    database *Database
+}
+
+func (this *Server) Serve(listen string) {
+    http.HandleFunc("/get", this.HandleGet)
+    http.HandleFunc("/set", this.HandleSet)
+    http.ListenAndServe(listen, nil)
+}
+
+func (this *Server) HandleGet(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (this *Server) HandleSet(w http.ResponseWriter, r *http.Request) {
 
 }
