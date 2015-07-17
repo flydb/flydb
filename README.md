@@ -39,9 +39,29 @@ func main() {
 }
 ```
 
-### Server
+### HTTP Server
 
-TODO
+See `examples/server/main.go`.
+
+### HTTP API
+
+#### Get
+
+```
+curl http://127.0.0.1:8080/users/1/email
+```
+
+#### Set
+
+```
+curl -x PUT -D '{"key": "value"}' http://127.0.0.1:8080/users/1/metadata
+```
+
+#### Delete
+
+```
+curl -x DELETE http://127.0.0.1:8080/users/1/metadata
+```
 
 ## Internal
 
@@ -130,7 +150,5 @@ println(string(yamlData))
 
 ## TODO
 
-- Data syncing
-- Builtin HTTP server
 - XML format support
 - Query API

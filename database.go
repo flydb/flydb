@@ -38,8 +38,10 @@ func Open(path string) (*Database, error) {
 
 // Create an in memory database
 func Memory() *Database {
+    wrap, _ := CreateWrapNode(nil)
     return &Database {
         root: &Node {
+            wrap,
         },
     }
 }
